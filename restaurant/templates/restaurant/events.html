@@ -1,0 +1,36 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}Tell us about your private dinner, family celebration or business gathering at Terra.{% else %}Расскажите о частном ужине, семейном празднике или деловой встрече в Terra.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Private events — Terra{% else %}Частные события — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+<section class="page-hero page-hero-events">
+    <img class="hero-image" src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?auto=format&amp;fit=crop&amp;w=1900&amp;q=85" alt="{% if site_language == 'en' %}A dinner table prepared for a gathering{% else %}Стол, подготовленный для особенного события{% endif %}">
+    <div class="hero-shade"></div>
+    <div class="page-hero-content" data-reveal><p class="eyebrow">{% if site_language == 'en' %}Gather at Terra{% else %}Собраться в Terra{% endif %}</p><h1>{% if site_language == 'en' %}Private events{% else %}Частные события{% endif %}</h1></div>
+</section>
+<section class="events-intro section-wrap"><p class="eyebrow">{% if site_language == 'en' %}For the moments worth sharing{% else %}Для моментов, которыми хочется делиться{% endif %}</p><h2 class="display-heading">{% if site_language == 'en' %}A good table makes any occasion feel special.{% else %}Хороший стол делает любой повод особенным.{% endif %}</h2><p>{% if site_language == 'en' %}Tell us what you are planning. Our team will get in touch to discuss your event and the options available.{% else %}Расскажите, что вы планируете. Команда свяжется с вами и обсудит формат и доступные варианты.{% endif %}</p></section>
+<section class="event-form-section" id="event-form">
+    <div class="event-form-aside"><p class="eyebrow">{% if site_language == 'en' %}Let's plan together{% else %}Давайте обсудим{% endif %}</p><h2 class="display-heading">{% if site_language == 'en' %}Your occasion, at Terra.{% else %}Ваш повод — в Terra.{% endif %}</h2><p>{% if site_language == 'en' %}Share a few details and our team will contact you to talk through your request.{% else %}Оставьте несколько деталей — и команда свяжется с вами, чтобы обсудить заявку.{% endif %}</p>
+        {% if site_settings.phone %}<a class="text-link" href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>{% endif %}
+    </div>
+    <form method="post" action="{% url 'restaurant:event_request' %}" class="form-stack event-form">
+        {% csrf_token %}
+        {% include 'restaurant/booking_fields.html' with form=form %}
+        <button class="button" type="submit" data-submit-button>{% if site_language == 'en' %}Send an enquiry{% else %}Оставить заявку{% endif %}</button>
+    </form>
+</section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

@@ -1,0 +1,24 @@
+{% load static %}
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    terra: {
+                        ivory: '#E7E1D4',
+                        green: '#13361C',
+                        olive: '#33412A',
+                        clay: '#944B1B',
+                        gold: '#AC7845'
+                    }
+                },
+                fontFamily: {
+                    editorial: ['Georgia', 'serif'],
+                    clean: ['Arial', 'sans-serif']
+                }
+            }
+        }
+    };
+</script>
+<link rel="stylesheet" href="{% static 'restaurant/css/site.css' %}?v=4">

@@ -1,0 +1,37 @@
+{% for hidden_field in form.hidden_fields %}{{ hidden_field }}{% endfor %}
+<div class="honeypot-field" aria-hidden="true">{{ form.website }}</div>
+{% for field in form.visible_fields %}
+    {% if field.name != 'consent' and field.name != 'website' %}
+        <div class="form-field">
+            <label for="{{ field.id_for_label }}">
+                {% if site_language == 'en' %}
+                    {% if field.name == 'name' %}Your name
+                    {% elif field.name == 'phone' %}Phone number
+                    {% elif field.name == 'booking_date' %}Date
+                    {% elif field.name == 'booking_time' %}Time
+                    {% elif field.name == 'guests' %}Number of guests
+                    {% elif field.name == 'restaurant' %}Restaurant
+                    {% elif field.name == 'comments' %}Comment (optional)
+                    {% elif field.name == 'email' %}Email (optional)
+                    {% elif field.name == 'event_date' %}Event date
+                    {% elif field.name == 'event_type' %}Type of event
+                    {% else %}{{ field.label }}{% endif %}
+                {% else %}{{ field.label }}{% endif %}
+            </label>
+            {{ field }}
+            {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+{% if form.consent %}
+    <div class="consent-field">
+        {{ form.consent }}
+        <label for="{{ form.consent.id_for_label }}">
+            {% if site_language == 'en' %}I agree to the <a href="{% url 'restaurant:privacy' %}">privacy policy</a>.{% else %}Я согласен(на) с <a href="{% url 'restaurant:privacy' %}">политикой обработки персональных данных</a>.{% endif %}
+        </label>
+        {% for error in form.consent.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+    </div>
+{% endif %}
+{% if form.non_field_errors %}
+    <div class="form-errors" role="alert">{{ form.non_field_errors }}</div>
+{% endif %}

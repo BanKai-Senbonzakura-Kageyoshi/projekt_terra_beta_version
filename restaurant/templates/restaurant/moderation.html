@@ -1,0 +1,64 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}Review restaurant applications and manage publication.{% else %}Проверка заявок ресторанов и управление публикацией.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Restaurant moderation — Terra{% else %}Модерация ресторанов — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="moderation-page section-wrap">
+    <header class="moderation-heading">
+        <div><p class="eyebrow">{% if site_language == 'en' %}Administration{% else %}Управление площадкой{% endif %}</p><h1 class="display-heading">{% if site_language == 'en' %}Restaurant review{% else %}Проверка ресторанов{% endif %}</h1><p>{% if site_language == 'en' %}Review the submitted profile and photo before making it visible to guests.{% else %}Проверьте данные и фотографию заведения перед публикацией для гостей.{% endif %}</p></div>
+        <span class="moderation-count">{{ pending_count }} {% if site_language == 'en' %}pending{% else %}на проверке{% endif %}</span>
+    </header>
+    <section class="moderation-section">
+        <h2>{% if site_language == 'en' %}Waiting for review{% else %}Ожидают проверки{% endif %}</h2>
+        {% for restaurant in pending_restaurants %}
+            <article class="moderation-card">
+                <div class="moderation-card-image">
+                    {% if restaurant.image %}<img src="{{ restaurant.image.url }}" alt="{% if site_language == 'en' %}Photo of {{ restaurant.name }}{% else %}Фотография: {{ restaurant.name }}{% endif %}">{% elif restaurant.image_url %}<img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}">{% else %}<div class="moderation-no-image">{% if site_language == 'en' %}No photo{% else %}Фото не загружено{% endif %}</div>{% endif %}
+                </div>
+                <div class="moderation-card-content">
+                    <p class="eyebrow">{{ restaurant.cuisine|default_if_none:'' }}</p>
+                    <h3>{{ restaurant.name }}</h3>
+                    <p>{{ restaurant.description }}</p>
+                    <dl>
+                        <div><dt>{% if site_language == 'en' %}Address{% else %}Адрес{% endif %}</dt><dd>{{ restaurant.address }}</dd></div>
+                        <div><dt>{% if site_language == 'en' %}Owner{% else %}Владелец{% endif %}</dt><dd>{{ restaurant.owner.username }}{% if restaurant.owner.email %} · {{ restaurant.owner.email }}{% endif %}</dd></div>
+                        <div><dt>{% if site_language == 'en' %}Phone{% else %}Телефон{% endif %}</dt><dd>{{ restaurant.phone|default:'—' }}</dd></div>
+                        <div><dt>{% if site_language == 'en' %}Coordinates{% else %}Точка карты{% endif %}</dt><dd>{{ restaurant.latitude }}, {{ restaurant.longitude }}</dd></div>
+                    </dl>
+                    <form method="post" action="{% url 'restaurant:moderation_action' restaurant.pk %}" class="moderation-actions">
+                        {% csrf_token %}
+                        <label class="sr-only" for="moderation-note-{{ restaurant.pk }}">{% if site_language == 'en' %}Reason if declining{% else %}Причина отклонения{% endif %}</label>
+                        <textarea id="moderation-note-{{ restaurant.pk }}" name="moderation_note" class="form-input" rows="2" placeholder="{% if site_language == 'en' %}If declining, explain what needs to change{% else %}Если отклоняете, объясните, что нужно исправить{% endif %}"></textarea>
+                        <div class="moderation-buttons">
+                            <button class="button" type="submit" name="action" value="approve">{% if site_language == 'en' %}Approve and publish{% else %}Одобрить и опубликовать{% endif %}</button>
+                            <button class="button moderation-reject" type="submit" name="action" value="reject" data-reject-button>{% if site_language == 'en' %}Decline{% else %}Отклонить{% endif %}</button>
+                        </div>
+                    </form>
+                </div>
+            </article>
+        {% empty %}
+            <div class="moderation-empty"><span>✓</span><h3>{% if site_language == 'en' %}All caught up{% else %}Новых заявок нет{% endif %}</h3><p>{% if site_language == 'en' %}New restaurant submissions will appear here.{% else %}Новые заявки на публикацию появятся здесь.{% endif %}</p></div>
+        {% endfor %}
+    </section>
+    {% if rejected_restaurants %}
+        <section class="moderation-section rejected-section">
+            <h2>{% if site_language == 'en' %}Declined submissions{% else %}Отклонённые заявки{% endif %}</h2>
+            {% for restaurant in rejected_restaurants %}
+                <article class="rejected-row"><div><strong>{{ restaurant.name }}</strong><p>{{ restaurant.owner.username }} · {{ restaurant.moderation_note }}</p></div><span>{% if site_language == 'en' %}Not published{% else %}Не опубликован{% endif %}</span><form method="post" action="{% url 'restaurant:moderation_action' restaurant.pk %}">{% csrf_token %}<button class="text-link" type="submit" name="action" value="approve">{% if site_language == 'en' %}Approve and publish{% else %}Одобрить и опубликовать{% endif %} ↗</button></form></article>
+            {% endfor %}
+        </section>
+    {% endif %}
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

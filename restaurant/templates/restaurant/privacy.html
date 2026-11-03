@@ -1,0 +1,25 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}How Terra handles personal data submitted through this website.{% else %}Как Terra обрабатывает персональные данные, отправленные через сайт.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Privacy policy — Terra{% else %}Политика конфиденциальности — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+<section class="privacy-page section-wrap">
+    <p class="eyebrow">{% if site_language == 'en' %}Privacy{% else %}Конфиденциальность{% endif %}</p>
+    <h1 class="display-heading">{% if site_language == 'en' %}Privacy policy{% else %}Политика обработки персональных данных{% endif %}</h1>
+    <p>{% if site_language == 'en' %}Information submitted through this website is stored so the restaurant team can respond to your request. Please have the restaurant review this text and publish its approved privacy policy before accepting real customer requests.{% else %}Данные, отправленные через сайт, сохраняются, чтобы команда ресторана могла ответить на заявку. Перед приёмом реальных заявок попросите ресторан проверить этот текст и опубликовать утверждённую политику конфиденциальности.{% endif %}</p>
+</section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

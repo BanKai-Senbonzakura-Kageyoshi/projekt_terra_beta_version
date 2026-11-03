@@ -1,0 +1,91 @@
+from django.urls import path
+from django.contrib.auth.views import LogoutView
+from .views import (
+    AboutPageView,
+    BookingCreateView,
+    BookingManageView,
+    BookingDecisionView,
+    BookingReleaseTableView,
+    ContactPageView,
+    EventRequestCreateView,
+    EventsPageView,
+    GalleryPageView,
+    HomePageView,
+    MenuPageView,
+    MenuCategoryCreateView,
+    MenuItemCreateView,
+    MenuManageView,
+    OwnerLoginView,
+    OwnerDashboardView,
+    PrivacyPageView,
+    RegisterView,
+    RestaurantCreateView,
+    RestaurantDetailView,
+    RestaurantListView,
+    RestaurantModerationActionView,
+    RestaurantModerationView,
+    RestaurantTableToggleView,
+    TableManageView,
+    ThankYouView,
+)
+
+
+app_name = 'restaurant'
+
+urlpatterns = [
+    path('', HomePageView.as_view(), name='home'),
+    path('restaurants/', RestaurantListView.as_view(), name='restaurants'),
+    path('restaurants/<slug:slug>/', RestaurantDetailView.as_view(), name='restaurant_detail'),
+    path('about/', AboutPageView.as_view(), name='about'),
+    path('menu/', MenuPageView.as_view(), name='menu'),
+    path('events/', EventsPageView.as_view(), name='events'),
+    path('events/request/', EventRequestCreateView.as_view(), name='event_request'),
+    path('gallery/', GalleryPageView.as_view(), name='gallery'),
+    path('contacts/', ContactPageView.as_view(), name='contacts'),
+    path('booking/', BookingCreateView.as_view(), name='booking'),
+    path('thank-you/', ThankYouView.as_view(), name='thank_you'),
+    path('privacy/', PrivacyPageView.as_view(), name='privacy'),
+    path('accounts/register/', RegisterView.as_view(), name='register'),
+    path(
+        'accounts/login/',
+        OwnerLoginView.as_view(),
+        name='login',
+    ),
+    path(
+        'accounts/logout/',
+        LogoutView.as_view(next_page='restaurant:home'),
+        name='logout',
+    ),
+    path('owner/', OwnerDashboardView.as_view(), name='dashboard'),
+    path('owner/tables/', TableManageView.as_view(), name='table_manage'),
+    path(
+        'owner/tables/<int:pk>/toggle/',
+        RestaurantTableToggleView.as_view(),
+        name='table_toggle',
+    ),
+    path('owner/restaurants/add/', RestaurantCreateView.as_view(), name='restaurant_add'),
+    path('owner/menu/', MenuManageView.as_view(), name='menu_manage'),
+    path(
+        'owner/restaurants/<int:restaurant_id>/categories/add/',
+        MenuCategoryCreateView.as_view(),
+        name='category_add',
+    ),
+    path('owner/menu/items/add/', MenuItemCreateView.as_view(), name='menu_item_add'),
+    path('owner/bookings/', BookingManageView.as_view(), name='booking_manage'),
+    path(
+        'owner/bookings/<int:pk>/release-table/',
+        BookingReleaseTableView.as_view(),
+        name='booking_release_table',
+    ),
+    path(
+        'owner/bookings/<int:pk>/status/',
+        BookingDecisionView.as_view(),
+        name='booking_status',
+    ),
+    path('moderation/', RestaurantModerationView.as_view(), name='moderation'),
+    path(
+        'moderation/restaurants/<int:pk>/',
+        RestaurantModerationActionView.as_view(),
+        name='moderation_action',
+    ),
+]

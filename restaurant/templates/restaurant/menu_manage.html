@@ -1,0 +1,41 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Управление меню ресторана.">
+    <title>{% if site_language == 'en' %}Manage menu{% else %}Управление меню{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="owner-page section-wrap">
+    <div class="section-heading section-heading-row">
+        <div><p class="eyebrow">{% if site_language == 'en' %}Owner account{% else %}Кабинет владельца{% endif %}</p><h1 class="display-heading">{% if site_language == 'en' %}Menu items{% else %}Меню{% endif %}</h1><p class="form-intro">{% if site_language == 'en' %}Add a dish directly. You can choose an existing category or create a new category in the dish form.{% else %}Добавляйте блюдо сразу: выберите готовую категорию или создайте новую прямо в форме блюда.{% endif %}</p></div>
+        <a class="button" href="{% url 'restaurant:menu_item_add' %}">{% if site_language == 'en' %}Add a dish{% else %}Добавить блюдо{% endif %}</a>
+    </div>
+    {% for restaurant in restaurants %}
+        <section class="owner-menu-restaurant">
+            <h2>{{ restaurant.name }}</h2>
+            <a class="text-link" href="{% url 'restaurant:category_add' restaurant.id %}">{% if site_language == 'en' %}Create category separately (optional){% else %}Создать категорию отдельно (необязательно){% endif %} ↗</a>
+        </section>
+    {% empty %}
+        <p class="empty-note">{% if site_language == 'en' %}Add a restaurant before adding dishes.{% else %}Сначала добавьте ресторан, затем создайте категории и блюда.{% endif %}</p>
+    {% endfor %}
+    {% for category in categories %}
+        <section class="owner-menu-category">
+            <h3>{{ category.restaurant.name }} — {{ category.name }}</h3>
+            {% for item in category.items.all %}
+                <article class="menu-item">{% if item.image %}<img class="menu-item-photo" src="{{ item.image.url }}" alt="{{ item.name }}" loading="lazy" decoding="async">{% elif item.image_url %}<img class="menu-item-photo" src="{{ item.image_url }}" alt="{{ item.name }}" loading="lazy" decoding="async">{% endif %}<div class="menu-item-copy"><h3>{{ item.name }}</h3><p>{{ item.description }}</p></div><span class="menu-price">{{ item.price }} смн</span></article>
+            {% empty %}<p class="empty-note">{% if site_language == 'en' %}No dishes in this category.{% else %}В категории пока нет блюд.{% endif %}{% endfor %}
+        </section>
+    {% empty %}
+        {% if restaurants %}<p class="empty-note">{% if site_language == 'en' %}No dishes yet. Use “Add a dish”; its category can be created in the same form.{% else %}Блюд пока нет. Нажмите «Добавить блюдо» — категорию можно создать в той же форме.{% endif %}</p>{% endif %}
+    {% endfor %}
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

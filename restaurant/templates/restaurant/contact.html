@@ -1,0 +1,50 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}Find Terra at Meros Residence, Mirzo Tursunzoda Street 24, Dushanbe.{% else %}Найдите Terra по адресу: Meros Residence, ул. Мирзо Турсунзода, 24, Душанбе.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Contacts — Terra{% else %}Контакты — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+<section class="contact-page section-wrap">
+    <div class="contact-heading" data-reveal><p class="eyebrow">{% if site_language == 'en' %}Come by{% else %}Приходите в гости{% endif %}</p><h1 class="display-heading">{% if site_language == 'en' %}Find your way to Terra.{% else %}Найдите дорогу в Terra.{% endif %}</h1></div>
+    <div class="contact-layout">
+        <div class="contact-details">
+            <div><p class="footer-label">{% if site_language == 'en' %}Address{% else %}Адрес{% endif %}</p><p>{{ site_settings.address|default:'Meros Residence, ул. Мирзо Турсунзода, 24, Душанбе' }}</p></div>
+            <div><p class="footer-label">{% if site_language == 'en' %}Hours{% else %}Часы работы{% endif %}</p><p>{% if site_language == 'en' %}Breakfast{% else %}Завтраки{% endif %}: {{ site_settings.breakfast_hours|default:'08:00–14:00' }}</p>
+                {% if site_settings.restaurant_hours %}<p>{% if site_language == 'en' %}Restaurant{% else %}Ресторан{% endif %}: {{ site_settings.restaurant_hours }}</p>
+                {% else %}<p class="hours-note">{% if site_language == 'en' %}Restaurant hours will be added when confirmed.{% else %}Часы работы ресторана добавят после подтверждения.{% endif %}</p>{% endif %}
+            </div>
+            <div><p class="footer-label">{% if site_language == 'en' %}Contact{% else %}Связь{% endif %}</p>
+                {% if site_settings.phone %}<a href="tel:{{ site_settings.phone }}">{{ site_settings.phone }}</a>{% else %}<p>{% if site_language == 'en' %}Phone number will be added{% else %}Телефон добавит администратор{% endif %}</p>{% endif %}
+                {% if site_settings.instagram_url %}<a href="{{ site_settings.instagram_url }}" target="_blank" rel="noopener noreferrer">{{ site_settings.instagram_name }}</a>{% else %}<p>{{ site_settings.instagram_name|default:'@terra.dushanbe' }}</p>{% endif %}
+            </div>
+            <button class="button" type="button" data-open-booking>{% if site_language == 'en' %}Book a table{% else %}Забронировать стол{% endif %}</button>
+        </div>
+        <div class="contact-map-panel">
+            <div class="contact-map-heading">
+                <h2>{% if site_language == 'en' %}Find us in the city centre{% else %}Мы в центре города{% endif %}</h2>
+                <button class="button" type="button" data-find-location>{% if site_language == 'en' %}Find my location{% else %}Найти меня{% endif %}</button>
+            </div>
+            <div class="contact-map restaurant-map" data-contact-map aria-label="{% if site_language == 'en' %}Map of Terra and nearby places in Dushanbe{% else %}Карта Terra и ближайших мест в Душанбе{% endif %}"></div>
+            <p class="map-status" data-map-status role="status" aria-live="polite"></p>
+            <p class="map-disclaimer">{% if site_language == 'en' %}Alfemo and nearby restaurant locations are shown as map references. Terra's point is approximate. Map data: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap contributors</a>.{% else %}Alfemo и близлежащие рестораны показаны как ориентиры. Точка Terra приблизительная. Данные карты: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">участники OpenStreetMap</a>.{% endif %}</p>
+        </div>
+    </div>
+    {{ contact_map_data|json_script:"contact-map-data" }}
+</section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'restaurant/js/map.js' %}?v=3" defer></script>
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

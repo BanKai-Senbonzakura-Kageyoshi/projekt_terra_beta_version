@@ -1,0 +1,16 @@
+<dialog class="booking-dialog" data-booking-dialog aria-labelledby="booking-title">
+    <div class="dialog-top">
+        <div>
+            <p class="eyebrow">{% if site_language == 'en' %}A table at Terra{% else %}Ваш вечер в Terra{% endif %}</p>
+            <h2 id="booking-title">{% if site_language == 'en' %}Book a table{% else %}Забронировать стол{% endif %}</h2>
+        </div>
+        <button class="dialog-close" type="button" aria-label="{% if site_language == 'en' %}Close{% else %}Закрыть{% endif %}" data-close-booking>×</button>
+    </div>
+    <p class="form-intro">{% if site_language == 'en' %}This is a request, not a confirmed booking. It will go to the selected restaurant's owner for review.{% else %}Это заявка, а не подтверждённая бронь. Она попадёт владельцу выбранного ресторана на рассмотрение.{% endif %}</p>
+    <form method="post" action="{% url 'restaurant:booking' %}" class="form-stack">
+        {% csrf_token %}
+        {% include 'restaurant/booking_fields.html' with form=booking_form %}
+        <button class="button" type="submit" data-submit-button>{% if site_language == 'en' %}Send request{% else %}Отправить заявку{% endif %}</button>
+    </form>
+    <p class="form-note">{% if site_language == 'en' %}For more than 12 guests, please use the private events form.{% else %}Для компании больше 12 гостей оставьте заявку на частное событие.{% endif %}</p>
+</dialog>

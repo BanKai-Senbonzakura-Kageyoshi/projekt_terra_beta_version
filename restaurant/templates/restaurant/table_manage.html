@@ -1,0 +1,53 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}Add tables and manage availability for your restaurants.{% else %}Добавление столиков и управление их доступностью.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Tables — Terra{% else %}Столики — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="owner-page section-wrap">
+    <header class="owner-page-heading">
+        <div><p class="eyebrow">{% if site_language == 'en' %}Restaurant setup{% else %}Настройки ресторана{% endif %}</p><h1 class="display-heading">{% if site_language == 'en' %}Your tables{% else %}Столики ресторана{% endif %}</h1><p>{% if site_language == 'en' %}Set each table's capacity. Confirmed bookings keep it unavailable until you mark the guests as departed.{% else %}Укажите вместимость каждого столика. После подтверждения он занят, пока вы не отметите, что гости ушли.{% endif %}</p></div>
+        <a class="text-link" href="{% url 'restaurant:dashboard' %}">← {% if site_language == 'en' %}Dashboard{% else %}В кабинет{% endif %}</a>
+    </header>
+    {% if restaurants %}
+        <section class="table-create-card">
+            <h2>{% if site_language == 'en' %}Add a table{% else %}Добавить столик{% endif %}</h2>
+            <form method="post" class="table-create-form">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>
+                {% endfor %}
+                <button class="button" type="submit">{% if site_language == 'en' %}Add table{% else %}Добавить{% endif %}</button>
+            </form>
+        </section>
+    {% else %}
+        <div class="moderation-empty"><h2>{% if site_language == 'en' %}Add a restaurant first{% else %}Сначала добавьте ресторан{% endif %}</h2><a class="button" href="{% url 'restaurant:restaurant_add' %}">{% if site_language == 'en' %}Add restaurant{% else %}Добавить ресторан{% endif %}</a></div>
+    {% endif %}
+    <section class="table-list-section">
+        <h2>{% if site_language == 'en' %}Table list{% else %}Список столиков{% endif %}</h2>
+        <div class="table-list">
+            {% for table in tables %}
+                <article class="table-card">
+                    <div class="table-icon" aria-hidden="true">⌑</div>
+                    <div class="table-card-copy"><span>{{ table.restaurant.name }}</span><h3>{{ table.name }}</h3><p>{{ table.capacity }} {% if site_language == 'en' %}seats{% else %}мест{% endif %}</p></div>
+                    <span class="table-state {% if not table.is_active %}is-inactive{% endif %}">{% if table.is_active %}{% if site_language == 'en' %}Available{% else %}Принимает брони{% endif %}{% else %}{% if site_language == 'en' %}Paused{% else %}Выключен{% endif %}{% endif %}</span>
+                    <form method="post" action="{% url 'restaurant:table_toggle' table.pk %}">{% csrf_token %}<button class="text-link" type="submit">{% if table.is_active %}{% if site_language == 'en' %}Pause{% else %}Выключить{% endif %}{% else %}{% if site_language == 'en' %}Activate{% else %}Включить{% endif %}{% endif %}</button></form>
+                </article>
+            {% empty %}
+                {% if restaurants %}<p class="empty-note">{% if site_language == 'en' %}No tables added yet.{% else %}Столиков пока нет — добавьте первый выше.{% endif %}</p>{% endif %}
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

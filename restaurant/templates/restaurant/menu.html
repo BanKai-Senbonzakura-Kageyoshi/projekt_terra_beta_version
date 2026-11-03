@@ -1,0 +1,103 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}Explore restaurant menus and dishes in Dushanbe.{% else %}Изучите меню ресторанов и блюда в Душанбе.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Menu — Terra{% else %}Меню — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+<section class="menu-page section-wrap">
+    <div class="menu-page-heading" data-reveal>
+        <p class="eyebrow">{% if site_language == 'en' %}Explore the city{% else %}Вкусы города{% endif %}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}Restaurant menus{% else %}Меню ресторанов{% endif %}</h1>
+        <p>{% if site_language == 'en' %}Choose a restaurant to see its dishes and photos.{% else %}Выберите ресторан, чтобы посмотреть его блюда и фотографии.{% endif %}</p>
+    </div>
+    <div class="all-menu-tools">
+        <div class="form-field">
+            <label for="menu-restaurant-filter">{% if site_language == 'en' %}Restaurant{% else %}Ресторан{% endif %}</label>
+            <select id="menu-restaurant-filter" class="form-input" data-menu-restaurant-filter>
+                <option value="">{% if site_language == 'en' %}All restaurants{% else %}Все рестораны{% endif %}</option>
+                {% for restaurant in restaurants %}<option value="{{ restaurant.id }}">{{ restaurant.name }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="form-field">
+            <label for="menu-dish-search">{% if site_language == 'en' %}Search dishes{% else %}Найти блюдо{% endif %}</label>
+            <input id="menu-dish-search" class="form-input" type="search" data-menu-dish-search placeholder="{% if site_language == 'en' %}Dish name{% else %}Название блюда{% endif %}">
+        </div>
+        <div class="form-field">
+            <label for="menu-category-filter">{% if site_language == 'en' %}Category{% else %}Категория{% endif %}</label>
+            <select id="menu-category-filter" class="form-input" data-menu-category-filter>
+                <option value="">{% if site_language == 'en' %}All categories{% else %}Все категории{% endif %}</option>
+                {% for category in menu_filter_categories %}<option value="{{ category.value }}">{{ category.label }}</option>{% endfor %}
+            </select>
+        </div>
+        <div class="form-field">
+            <label for="menu-price-filter">{% if site_language == 'en' %}Price{% else %}Цена{% endif %}</label>
+            <select id="menu-price-filter" class="form-input" data-menu-price-filter>
+                <option value="">{% if site_language == 'en' %}Any price{% else %}Любая цена{% endif %}</option>
+                <option value="under-50">{% if site_language == 'en' %}Up to 50 TJS{% else %}До 50 сомони{% endif %}</option>
+                <option value="50-100">{% if site_language == 'en' %}50–100 TJS{% else %}50–100 сомони{% endif %}</option>
+                <option value="over-100">{% if site_language == 'en' %}Over 100 TJS{% else %}Больше 100 сомони{% endif %}</option>
+            </select>
+        </div>
+        <label class="menu-vegetarian-filter"><input type="checkbox" data-menu-vegetarian-filter> {% if site_language == 'en' %}Vegetarian only{% else %}Только вегетарианское{% endif %}</label>
+        <button class="filter-reset" type="button" data-menu-filter-reset>{% if site_language == 'en' %}Clear filters{% else %}Сбросить фильтры{% endif %}</button>
+    </div>
+    <p class="catalog-results" data-menu-results role="status" aria-live="polite" data-result-label="{% if site_language == 'en' %}dishes found{% else %}блюд найдено{% endif %}"></p>
+    <p class="empty-note" data-menu-no-results hidden>{% if site_language == 'en' %}No dishes match these filters.{% else %}По этим фильтрам блюда не найдены.{% endif %}</p>
+    <p class="menu-photo-note">{% if site_language == 'en' %}Some restaurants use sample menus and illustrative photos that have not been confirmed by the restaurant.{% else %}В меню некоторых ресторанов есть примеры блюд и иллюстративные фотографии, не подтверждённые рестораном.{% endif %}</p>
+    {% for restaurant in restaurants %}
+        <details class="all-menu-restaurant" data-menu-restaurant="{{ restaurant.id }}">
+            <summary>
+                <span><strong>{{ restaurant.name }}</strong><small>{% if restaurant.cuisine %}{{ restaurant.cuisine }}{% else %}{{ restaurant.address }}{% endif %}</small></span>
+                <span class="menu-open-label">
+                    <span class="show-menu-label">{% if site_language == 'en' %}Show menu{% else %}Открыть меню{% endif %}</span>
+                    <span class="hide-menu-label">{% if site_language == 'en' %}Hide menu{% else %}Скрыть меню{% endif %}</span>
+                </span>
+            </summary>
+            {% if restaurant.menu_is_sample %}
+                <div class="sample-menu-notice" role="note">{% if site_language == 'en' %}Sample dishes, prices and photos. Not confirmed by the restaurant.{% else %}Примеры блюд, цен и фотографий. Ресторан их не подтверждал.{% endif %}</div>
+            {% endif %}
+            {% for category in restaurant.categories.all %}
+                {% if category.is_active %}
+                    <section class="menu-category" data-menu-category data-menu-category-name="{{ category.name }}">
+                        <div class="menu-category-title"><h2>{% if site_language == 'en' and category.name_en %}{{ category.name_en }}{% else %}{{ category.name }}{% endif %}</h2></div>
+                        {% for item in category.items.all %}
+                            <article class="menu-item" data-menu-item data-menu-price="{{ item.price }}" data-menu-vegetarian="{{ item.is_vegetarian|yesno:'true,false' }}">
+                                {% if item.image %}<img class="menu-item-photo" src="{{ item.image.url }}" alt="{% if site_language == 'en' and item.name_en %}{{ item.name_en }}{% else %}{{ item.name }}{% endif %}" loading="lazy" decoding="async">{% elif item.image_url %}<img class="menu-item-photo" src="{{ item.image_url }}" alt="{% if site_language == 'en' and item.name_en %}{{ item.name_en }}{% else %}{{ item.name }}{% endif %}" loading="lazy" decoding="async">{% else %}<img class="menu-item-photo" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="{% if site_language == 'en' %}Illustrative dish photo{% else %}Иллюстративное фото блюда{% endif %}" loading="lazy" decoding="async">{% endif %}
+                                <div class="menu-item-copy">
+                                    <h3>{% if site_language == 'en' and item.name_en %}{{ item.name_en }}{% else %}{{ item.name }}{% endif %}</h3>
+                                    {% if item.description or item.description_en %}<p>{% if site_language == 'en' and item.description_en %}{{ item.description_en }}{% else %}{{ item.description }}{% endif %}</p>{% endif %}
+                                    <div class="menu-tags">
+                                        {% if item.is_vegetarian %}<span>{% if site_language == 'en' %}Vegetarian{% else %}Вегетарианское{% endif %}</span>{% endif %}
+                                        {% if item.allergens %}<span>{% if site_language == 'en' %}Allergens{% else %}Аллергены{% endif %}: {{ item.allergens }}</span>{% endif %}
+                                        {% if not item.is_available %}<span class="unavailable">{% if site_language == 'en' %}Temporarily unavailable{% else %}Временно недоступно{% endif %}</span>{% endif %}
+                                    </div>
+                                </div>
+                                <span class="menu-price">{{ item.price|floatformat:0 }} {% if site_language == 'en' %}TJS{% else %}смн{% endif %}</span>
+                            </article>
+                        {% empty %}
+                            <p class="empty-note">{% if site_language == 'en' %}No dishes in this category yet.{% else %}В этой категории пока нет блюд.{% endif %}</p>
+                        {% endfor %}
+                    </section>
+                {% endif %}
+            {% empty %}
+                <p class="empty-note">{% if site_language == 'en' %}This restaurant has not added a menu yet.{% else %}Ресторан пока не добавил меню.{% endif %}</p>
+            {% endfor %}
+        </details>
+    {% empty %}
+        <div class="empty-menu"><p>{% if site_language == 'en' %}No restaurant menus are available yet.{% else %}Пока нет меню ресторанов.{% endif %}</p></div>
+    {% endfor %}
+</section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

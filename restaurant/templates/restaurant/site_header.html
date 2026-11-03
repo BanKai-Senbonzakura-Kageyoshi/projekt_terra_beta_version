@@ -1,0 +1,35 @@
+<header class="site-header" data-header>
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav" data-menu-toggle>
+        <span class="sr-only">{% if site_language == 'en' %}Open menu{% else %}Открыть меню{% endif %}</span>
+        <span></span><span></span>
+    </button>
+    <nav class="main-nav" id="main-nav" data-main-nav aria-label="{% if site_language == 'en' %}Main navigation{% else %}Главное меню{% endif %}">
+        <a href="{% url 'restaurant:home' %}">{% if site_language == 'en' %}Home{% else %}Главная{% endif %}</a>
+        <a href="{% url 'restaurant:about' %}">{% if site_language == 'en' %}About{% else %}О Terra{% endif %}</a>
+        <a href="{% url 'restaurant:restaurants' %}">{% if site_language == 'en' %}Restaurants{% else %}Рестораны{% endif %}</a>
+        <a href="{% url 'restaurant:events' %}">{% if site_language == 'en' %}Private events{% else %}События{% endif %}</a>
+        <a href="{% url 'restaurant:gallery' %}">{% if site_language == 'en' %}Gallery{% else %}Галерея{% endif %}</a>
+        <a href="{% url 'restaurant:contacts' %}">{% if site_language == 'en' %}Contacts{% else %}Контакты{% endif %}</a>
+    </nav>
+    <a class="wordmark" href="{% url 'restaurant:home' %}" aria-label="Terra">Terra</a>
+    <div class="header-actions">
+        <a class="language-link" href="?language={% if site_language == 'en' %}ru{% else %}en{% endif %}">
+            {% if site_language == 'en' %}RU{% else %}EN{% endif %}
+        </a>
+        {% if request.user.is_superuser %}
+            <a class="language-link" href="{% url 'restaurant:dashboard' %}">{% if site_language == 'en' %}My account{% else %}Кабинет{% endif %}</a>
+            <a class="language-link" href="{% url 'restaurant:moderation' %}">{% if site_language == 'en' %}Review{% else %}Модерация{% endif %}</a>
+        {% else %}
+            <a class="language-link" href="{% url 'restaurant:login' %}">{% if site_language == 'en' %}Log in{% else %}Войти{% endif %}</a>
+        {% endif %}
+        <button class="button button-small header-booking" type="button" data-open-booking>
+            {% if site_language == 'en' %}Book a table{% else %}Забронировать стол{% endif %}
+        </button>
+    </div>
+</header>
+
+{% if messages %}
+    <div class="message-area" role="status">
+        {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+    </div>
+{% endif %}

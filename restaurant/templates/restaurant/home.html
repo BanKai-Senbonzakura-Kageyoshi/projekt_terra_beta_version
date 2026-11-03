@@ -1,0 +1,98 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}A simple guide to restaurants, dishes and locations across Dushanbe.{% else %}Понятный гид по ресторанам, блюдам и адресам Душанбе.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Where to eat in Dushanbe — Terra{% else %}Где поесть в Душанбе — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+    <section class="hero home-hero">
+        <img class="hero-image" src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&amp;fit=crop&amp;w=2200&amp;q=85" alt="{% if site_language == 'en' %}A welcoming restaurant table{% else %}Уютный стол в ресторане{% endif %}">
+        <div class="hero-shade"></div>
+        <div class="hero-content" data-reveal>
+            <p class="eyebrow">{% if site_language == 'en' %}A local food guide · Dushanbe{% else %}Гид по заведениям · Душанбе{% endif %}</p>
+            <h1>{% if site_language == 'en' %}Find your place.{% else %}Найдите своё место.{% endif %}</h1>
+            <p class="hero-description">{% if site_language == 'en' %}Compare places, browse dishes and see where to go — all in one simple guide.{% else %}Сравнивайте рестораны, смотрите блюда и находите дорогу — всё в одном простом гиде.{% endif %}</p>
+            <div class="hero-actions">
+                <a class="button button-light" href="{% url 'restaurant:restaurants' %}">{% if site_language == 'en' %}Explore restaurants{% else %}Выбрать ресторан{% endif %}</a>
+                <a class="text-link text-link-light" href="{% url 'restaurant:menu' %}">{% if site_language == 'en' %}Browse dishes{% else %}Смотреть блюда{% endif %} ↗</a>
+            </div>
+        </div>
+        <span class="hero-caption">{% if site_language == 'en' %}Restaurants · menus · locations{% else %}Рестораны · меню · адреса{% endif %}</span>
+    </section>
+
+    <section class="home-guide section-wrap">
+        <div class="home-guide-heading">
+            <p class="eyebrow">{% if site_language == 'en' %}A clear place to start{% else %}Начните с главного{% endif %}</p>
+            <h2 class="display-heading">{% if site_language == 'en' %}Your next meal, made easier.{% else %}Выбрать место стало проще.{% endif %}</h2>
+            <p>{% if site_language == 'en' %}Use the catalog to find a cuisine, open a restaurant to check its details, or search the menus for a dish.{% else %}Найдите кухню в каталоге, откройте страницу ресторана или поищите конкретное блюдо в меню.{% endif %}</p>
+        </div>
+        <div class="home-guide-cards">
+            <a href="{% url 'restaurant:restaurants' %}" class="home-guide-card">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="{% if site_language == 'en' %}Restaurant dining room{% else %}Зал ресторана{% endif %}" loading="lazy">
+                <span>01</span><h3>{% if site_language == 'en' %}Choose a place{% else %}Выберите ресторан{% endif %}</h3>
+                <p>{% if site_language == 'en' %}Search by name or cuisine and see restaurant locations on the map.{% else %}Ищите по названию или кухне и смотрите расположение ресторанов на карте.{% endif %}</p>
+            </a>
+            <a href="{% url 'restaurant:menu' %}" class="home-guide-card">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="{% if site_language == 'en' %}A table of prepared dishes{% else %}Блюда, поданные к столу{% endif %}" loading="lazy">
+                <span>02</span><h3>{% if site_language == 'en' %}See the menu{% else %}Посмотрите меню{% endif %}</h3>
+                <p>{% if site_language == 'en' %}Filter by restaurant, dish type, price or vegetarian options.{% else %}Фильтруйте блюда по ресторану, категории, цене и вегетарианским вариантам.{% endif %}</p>
+            </a>
+            <a href="{% url 'restaurant:contacts' %}" class="home-guide-card">
+                <img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="{% if site_language == 'en' %}A cozy cafe interior{% else %}Уютный интерьер кафе{% endif %}" loading="lazy">
+                <span>03</span><h3>{% if site_language == 'en' %}Plan your visit{% else %}Спланируйте визит{% endif %}</h3>
+                <p>{% if site_language == 'en' %}Check addresses and use the map to get a better sense of the area.{% else %}Сверьте адрес и воспользуйтесь картой, чтобы сориентироваться.{% endif %}</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="home-stats" aria-label="{% if site_language == 'en' %}Guide statistics{% else %}О гиде в цифрах{% endif %}">
+        <div class="section-wrap home-stats-inner">
+            <div><strong>{{ restaurant_count }}</strong><span>{% if site_language == 'en' %}places in Dushanbe{% else %}заведений в Душанбе{% endif %}</span></div>
+            <div><strong>{{ category_count }}</strong><span>{% if site_language == 'en' %}menu categories{% else %}категорий меню{% endif %}</span></div>
+            <div><strong>{{ dish_count }}</strong><span>{% if site_language == 'en' %}dishes to explore{% else %}блюд для знакомства{% endif %}</span></div>
+        </div>
+        <p class="section-wrap home-stats-note">{% if site_language == 'en' %}Some menus and dish photos are examples for browsing and have not been confirmed by the restaurant.{% else %}Часть меню и фотографий блюд добавлена для знакомства и не подтверждена ресторанами.{% endif %}</p>
+    </section>
+
+    <section class="home-featured section-wrap">
+        <div class="section-heading section-heading-row">
+            <div><p class="eyebrow">{% if site_language == 'en' %}A few places to begin{% else %}Для первого знакомства{% endif %}</p><h2 class="display-heading">{% if site_language == 'en' %}Explore Dushanbe.{% else %}Откройте Душанбе.{% endif %}</h2></div>
+            <a class="text-link" href="{% url 'restaurant:restaurants' %}">{% if site_language == 'en' %}All restaurants{% else %}Все рестораны{% endif %} ↗</a>
+        </div>
+        <div class="restaurant-cards home-featured-cards">
+            {% for restaurant in featured_restaurants %}
+                {% cycle 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80' 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=900&q=80' 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80' as fallback_photo silent %}
+                <article class="restaurant-card">
+                    {% if restaurant.image %}<img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}" loading="lazy">{% elif restaurant.image_url %}<img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}" loading="lazy">{% else %}<img src="{{ fallback_photo }}" alt="{% if site_language == 'en' %}Illustrative restaurant photo{% else %}Иллюстративное фото ресторана{% endif %}" loading="lazy">{% endif %}
+                    <div class="restaurant-card-content">
+                        <p class="eyebrow">{{ restaurant.cuisine|default_if_none:'' }}</p>
+                        <h3><a href="{% url 'restaurant:restaurant_detail' restaurant.slug %}">{{ restaurant.name }}</a></h3>
+                        <p>{% if restaurant.address == 'Душанбе, Таджикистан' %}{% if site_language == 'en' %}Dushanbe · street address not listed{% else %}Душанбе · улица не указана в источнике{% endif %}{% else %}{{ restaurant.address }}{% endif %}</p>
+                        <a class="text-link" href="{% url 'restaurant:restaurant_detail' restaurant.slug %}">{% if site_language == 'en' %}View details{% else %}Подробнее{% endif %} ↗</a>
+                    </div>
+                </article>
+            {% empty %}
+                <p class="empty-note">{% if site_language == 'en' %}Restaurant listings will appear here soon.{% else %}Скоро здесь появятся рестораны.{% endif %}</p>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section class="home-cta">
+        <div class="section-wrap home-cta-inner">
+            <div><p class="eyebrow">{% if site_language == 'en' %}The city is on the map{% else %}Город на карте{% endif %}</p><h2 class="display-heading">{% if site_language == 'en' %}Find a place near your plans.{% else %}Найдите ресторан рядом с вашими планами.{% endif %}</h2></div>
+            <a class="button button-light" href="{% url 'restaurant:restaurants' %}#restaurant-map">{% if site_language == 'en' %}Open restaurant map{% else %}Открыть карту ресторанов{% endif %}</a>
+        </div>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

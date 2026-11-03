@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}Discover Terra's contemporary Mediterranean spirit and warm hospitality in Dushanbe.{% else %}Узнайте о современном средиземноморском характере Terra и гостеприимстве в Душанбе.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}About Terra — Our story{% else %}О Terra — наша история{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+<section class="page-hero page-hero-about">
+    <img class="hero-image" src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=1900&amp;q=85" alt="{% if site_language == 'en' %}Restaurant dining room{% else %}Зал ресторана Terra{% endif %}">
+    <div class="hero-shade"></div>
+    <div class="page-hero-content" data-reveal><p class="eyebrow">{% if site_language == 'en' %}Our story{% else %}Наша история{% endif %}</p><h1>{% if site_language == 'en' %}About Terra{% else %}О Terra{% endif %}</h1></div>
+</section>
+<section class="story-section section-wrap">
+    <p class="eyebrow">{% if site_language == 'en' %}A way of gathering{% else %}Культура встреч{% endif %}</p>
+    <div class="story-copy">
+        <h2 class="display-heading">{% if site_language == 'en' %}A Mediterranean point of view, with a place of its own in Dushanbe.{% else %}Средиземноморский взгляд и своё место в Душанбе.{% endif %}</h2>
+        <p>{% if site_language == 'en' %}Terra is shaped by the open-hearted spirit of Mediterranean dining: fresh flavours, a generous table and time spent together. Our idea is simple — make each visit feel considered, from the first welcome to the last cup of coffee. We bring this spirit to Dushanbe in a contemporary setting, with space for everyday rituals and meaningful celebrations alike.{% else %}Terra вдохновлена открытой культурой средиземноморских застолий: яркими вкусами, щедрым столом и временем, проведённым вместе. Наша идея проста — сделать каждое посещение внимательным, от первой встречи до последней чашки кофе. Мы привносим этот дух в современное пространство Душанбе, где найдётся место и для повседневных ритуалов, и для важных событий.{% endif %}</p>
+    </div>
+</section>
+<section class="about-image-band">
+    <img src="https://images.unsplash.com/photo-1559339352-11d035aa65de?auto=format&amp;fit=crop&amp;w=1800&amp;q=85" alt="{% if site_language == 'en' %}A carefully set table{% else %}Сервировка стола в ресторане{% endif %}" loading="lazy">
+</section>
+<section class="zira-section section-wrap">
+    <div><p class="eyebrow">{% if site_language == 'en' %}Part of a wider welcome{% else %}Часть большой истории гостеприимства{% endif %}</p><h2 class="display-heading">Terra <span>×</span> Zira Group</h2></div>
+    <p>{% if site_language == 'en' %}Terra is managed by Zira Group and belongs to a wider community of hospitality. A shared care for people and place guides the experience, while Terra keeps its own character at the table.{% else %}Terra управляется Zira Group и является частью большой экосистемы гостеприимства. Общее внимание к людям и пространству задаёт качество опыта, а за столом Terra сохраняет собственный характер.{% endif %}</p>
+</section>
+<section class="text-cta section-wrap"><h2 class="display-heading">{% if site_language == 'en' %}Come and find your favourite.{% else %}Приходите за своим любимым вкусом.{% endif %}</h2><a class="text-link" href="{% url 'restaurant:menu' %}">{% if site_language == 'en' %}Explore the menu{% else %}Смотреть меню{% endif %} ↗</a><button class="button" type="button" data-open-booking>{% if site_language == 'en' %}Book a table{% else %}Забронировать стол{% endif %}</button></section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

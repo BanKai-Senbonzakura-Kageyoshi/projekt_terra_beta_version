@@ -1,0 +1,26 @@
+<footer class="site-footer">
+    <div class="footer-main">
+        <div>
+            <a class="footer-wordmark" href="{% url 'restaurant:home' %}">Terra</a>
+            <p>{% if site_language == 'en' %}Contemporary Mediterranean restaurant{% else %}Современная средиземноморская кухня{% endif %}</p>
+        </div>
+        <div>
+            <p class="footer-label">{% if site_language == 'en' %}Visit us{% else %}Мы находимся{% endif %}</p>
+            <p>{% if site_language == 'en' %}Dushanbe, Tajikistan{% else %}Душанбе, Таджикистан{% endif %}</p>
+        </div>
+        <div>
+            <p class="footer-label">{% if site_language == 'en' %}Say hello{% else %}Связаться{% endif %}</p>
+            <p>{% if site_language == 'en' %}Contact details are on each restaurant page.{% else %}Контакты указаны на странице каждого ресторана.{% endif %}</p>
+        </div>
+        <div>
+            <p class="footer-label">{% if site_language == 'en' %}Explore{% else %}Разделы{% endif %}</p>
+            <a href="{% url 'restaurant:restaurants' %}">{% if site_language == 'en' %}Restaurants{% else %}Рестораны{% endif %}</a>
+            <a href="{% url 'restaurant:events' %}">{% if site_language == 'en' %}Private events{% else %}Частные события{% endif %}</a>
+            <a href="{% url 'restaurant:contacts' %}">{% if site_language == 'en' %}Contacts{% else %}Контакты{% endif %}</a>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <span>© Terra · Managed by Zira Group</span>
+        <a href="{% url 'restaurant:privacy' %}">{% if site_language == 'en' %}Privacy policy{% else %}Политика конфиденциальности{% endif %}</a>
+    </div>
+</footer>

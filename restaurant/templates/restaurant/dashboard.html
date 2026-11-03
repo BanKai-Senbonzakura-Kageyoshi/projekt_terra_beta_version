@@ -1,0 +1,47 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Кабинет владельца ресторана.">
+    <title>{% if site_language == 'en' %}Owner dashboard{% else %}Кабинет ресторана{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="owner-page section-wrap">
+    <div class="owner-welcome">
+        <div><p class="eyebrow">{% if site_language == 'en' %}Owner workspace{% else %}Рабочее пространство владельца{% endif %}</p><h1 class="display-heading">{% if site_language == 'en' %}Good to see you, {{ request.user.username }}.{% else %}Здравствуйте, {{ request.user.username }}.{% endif %}</h1><p>{% if site_language == 'en' %}Your restaurants, reservations and service controls in one place.{% else %}Ваши рестораны, бронирования и управление обслуживанием — в одном месте.{% endif %}</p></div>
+        <a class="button" href="{% url 'restaurant:restaurant_add' %}">{% if site_language == 'en' %}Add restaurant{% else %}Добавить ресторан{% endif %}</a>
+    </div>
+    <nav class="owner-quick-links" aria-label="{% if site_language == 'en' %}Owner tools{% else %}Инструменты владельца{% endif %}">
+        <a href="{% url 'restaurant:menu_manage' %}"><span>01</span><strong>{% if site_language == 'en' %}Menu{% else %}Меню{% endif %}</strong><small>{% if site_language == 'en' %}Dishes and categories{% else %}Блюда и категории{% endif %} ↗</small></a>
+        <a href="{% url 'restaurant:table_manage' %}"><span>02</span><strong>{% if site_language == 'en' %}Tables{% else %}Столики{% endif %}</strong><small>{% if site_language == 'en' %}Capacity and availability{% else %}Вместимость и доступность{% endif %} ↗</small></a>
+        <a href="{% url 'restaurant:booking_manage' %}"><span>03</span><strong>{% if site_language == 'en' %}Reservations{% else %}Бронирования{% endif %}</strong><small>{% if site_language == 'en' %}Review guest requests{% else %}Заявки гостей{% endif %} ↗</small></a>
+        {% if request.user.is_superuser %}<a href="{% url 'restaurant:moderation' %}"><span>04</span><strong>{% if site_language == 'en' %}Moderation{% else %}Модерация{% endif %}</strong><small>{% if site_language == 'en' %}Review submissions{% else %}Проверка заведений{% endif %} ↗</small></a>{% endif %}
+    </nav>
+    <div class="owner-section-heading"><div><p class="eyebrow">{% if site_language == 'en' %}Your places{% else %}Ваши заведения{% endif %}</p><h2>{% if site_language == 'en' %}Restaurant overview{% else %}Обзор ресторанов{% endif %}</h2></div></div>
+    <div class="owner-list">
+        {% for restaurant in restaurants %}
+            <article class="owner-row">
+                <div class="owner-restaurant-summary">{% if restaurant.image %}<img src="{{ restaurant.image.url }}" alt="">{% else %}<span class="owner-restaurant-placeholder">{{ restaurant.name|slice:':1' }}</span>{% endif %}<div><h3>{{ restaurant.name }}</h3><p>{{ restaurant.cuisine }} · {{ restaurant.address }}</p></div></div>
+                <span class="approval-status {% if restaurant.is_approved %}is-published{% elif restaurant.moderation_note %}is-rejected{% endif %}">{% if restaurant.is_approved %}{% if site_language == 'en' %}Published{% else %}Опубликован{% endif %}{% elif restaurant.moderation_note %}{% if site_language == 'en' %}Changes requested{% else %}Нужны исправления{% endif %}{% else %}{% if site_language == 'en' %}Under review{% else %}На модерации{% endif %}{% endif %}</span>
+                <a class="text-link" href="{% url 'restaurant:menu_manage' %}">{% if site_language == 'en' %}Manage menu{% else %}Управлять меню{% endif %} ↗</a>
+                {% if restaurant.moderation_note %}<p class="owner-moderation-note">{{ restaurant.moderation_note }}</p>{% endif %}
+            </article>
+        {% empty %}
+            <p class="empty-note">{% if site_language == 'en' %}You have not added a restaurant yet.{% else %}Вы ещё не добавили ресторан.{% endif %}</p>
+        {% endfor %}
+    </div>
+    <div class="owner-actions">
+        <a class="button" href="{% url 'restaurant:menu_manage' %}">{% if site_language == 'en' %}Manage menu{% else %}Управлять меню{% endif %}</a>
+        <a class="button" href="{% url 'restaurant:booking_manage' %}">{% if site_language == 'en' %}Booking requests{% else %}Заявки на бронирование{% endif %}</a>
+        <form method="post" action="{% url 'restaurant:logout' %}">{% csrf_token %}<button class="text-link" type="submit">{% if site_language == 'en' %}Log out{% else %}Выйти{% endif %}</button></form>
+    </div>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

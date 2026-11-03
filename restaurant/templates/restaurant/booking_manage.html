@@ -1,0 +1,48 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Заявки на бронирование ваших ресторанов.">
+    <title>{% if site_language == 'en' %}Booking requests{% else %}Заявки на бронирование{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="owner-page section-wrap">
+    <div class="section-heading">
+        <p class="eyebrow">{% if site_language == 'en' %}Owner account{% else %}Кабинет владельца{% endif %}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}Booking requests{% else %}Заявки на столик{% endif %}</h1>
+    </div>
+    <div class="owner-list">
+        {% for booking in bookings %}
+            <article class="owner-row booking-owner-row">
+                <div>
+                    <h2>{{ booking.name }} · {{ booking.restaurant.name }}</h2>
+                    <p><a href="tel:{{ booking.phone }}">{{ booking.phone }}</a> · {{ booking.booking_date }} · {{ booking.booking_time }} · {{ booking.guests }} {% if site_language == 'en' %}guests{% else %}гостей{% endif %}</p>
+                    {% if booking.table %}<p>{% if site_language == 'en' %}Table{% else %}Столик{% endif %}: {{ booking.table.name }}</p>{% endif %}
+                    {% if booking.comments %}<p>{{ booking.comments }}</p>{% endif %}
+                    {% if booking.owner_note %}<p class="booking-owner-note">{% if site_language == 'en' %}Your note{% else %}Ответ гостю{% endif %}: {{ booking.owner_note }}</p>{% endif %}
+                </div>
+                <span class="approval-status">{{ booking.get_status_display }}</span>
+                <div class="booking-actions">
+                    {% if booking.status == 'new' or booking.status == 'in_progress' or booking.status == 'confirmed' %}<a class="text-link" href="{% url 'restaurant:booking_status' booking.id %}">{% if site_language == 'en' %}Review request{% else %}Рассмотреть заявку{% endif %} ↗</a>{% endif %}
+                    {% if booking.status == 'confirmed' and booking.table %}
+                        <form method="post" action="{% url 'restaurant:booking_release_table' booking.id %}">
+                            {% csrf_token %}
+                            <button class="button button-small" type="submit">{% if site_language == 'en' %}Guests left · free table{% else %}Гости ушли · освободить столик{% endif %}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </article>
+        {% empty %}
+            <p class="empty-note">{% if site_language == 'en' %}No booking requests yet.{% else %}Заявок пока нет.{% endif %}</p>
+        {% endfor %}
+    </div>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

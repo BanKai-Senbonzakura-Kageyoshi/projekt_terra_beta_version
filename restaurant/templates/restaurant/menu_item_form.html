@@ -1,0 +1,43 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Добавить блюдо в меню ресторана.">
+    <title>{% if site_language == 'en' %}Add a dish{% else %}Добавить блюдо{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="standalone-form-page">
+    <section class="standalone-form-card">
+        <p class="eyebrow">{% if site_language == 'en' %}Menu editor{% else %}Редактор меню{% endif %}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}Add a dish.{% else %}Новое блюдо.{% endif %}</h1>
+        <p class="form-intro">{% if site_language == 'en' %}Choose your restaurant, add the dish and upload a photo. Select an existing category or type a new one; it will be created together with the dish.{% else %}Выберите ресторан, заполните блюдо и загрузите фото. Можно выбрать готовую категорию или написать новую — она создастся вместе с блюдом.{% endif %}</p>
+        {% if not form.fields.category.queryset %}
+            {% if not form.fields.restaurant.queryset %}<p class="form-intro">{% if site_language == 'en' %}Add a restaurant first.{% else %}Сначала добавьте ресторан.{% endif %}</p>{% endif %}
+        {% endif %}
+        <form method="post" enctype="multipart/form-data" class="form-stack">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-field">
+                    {% if field.field.widget.input_type == 'checkbox' %}
+                        <label>{{ field }} {{ field.label }}</label>
+                    {% else %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}
+                    {% endif %}
+                    {% if field.name == 'image' %}<img class="upload-preview" data-upload-preview alt="{% if site_language == 'en' %}Dish photo preview{% else %}Предпросмотр фото блюда{% endif %}" hidden>{% endif %}
+                    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            <button class="button" type="submit">{% if site_language == 'en' %}Save dish{% else %}Сохранить блюдо{% endif %}</button>
+        </form>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

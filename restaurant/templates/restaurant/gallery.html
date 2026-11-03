@@ -1,0 +1,49 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{% if site_language == 'en' %}A glimpse of the food and atmosphere at Terra in Dushanbe.{% else %}Атмосфера, кухня и детали Terra в Душанбе.{% endif %}">
+    <meta name="theme-color" content="#13361c">
+    <title>{% if site_language == 'en' %}Gallery — Terra{% else %}Галерея — Terra{% endif %}</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+<section class="gallery-page section-wrap">
+    <div class="gallery-heading" data-reveal><p class="eyebrow">{% if site_language == 'en' %}A visual journal{% else %}Визуальный журнал{% endif %}</p><h1 class="display-heading">{% if site_language == 'en' %}The atmosphere of Terra{% else %}Атмосфера Terra{% endif %}</h1><p>{% if site_language == 'en' %}Little moments from our table, kitchen and space.{% else %}Небольшие мгновения из жизни нашего стола, кухни и пространства.{% endif %}</p></div>
+    <div class="gallery-grid">
+        {% for image in gallery_images %}
+            <button class="gallery-image-button" type="button" data-gallery-image="{{ image.image_url }}" data-gallery-alt="{{ image.alt_text }}" aria-label="{% if site_language == 'en' %}Open image{% else %}Открыть фотографию{% endif %}">
+                <img src="{{ image.image_url }}" alt="{{ image.alt_text }}" loading="lazy">
+                {% if image.title or image.title_en %}<span>{% if site_language == 'en' and image.title_en %}{{ image.title_en }}{% else %}{{ image.title }}{% endif %}</span>{% endif %}
+            </button>
+        {% empty %}
+            <button class="gallery-image-button" type="button" data-gallery-image="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&amp;fit=crop&amp;w=1200&amp;q=85" data-gallery-alt="{% if site_language == 'en' %}Illustrative restaurant table{% else %}Иллюстративное фото ресторанного стола{% endif %}">
+                <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="{% if site_language == 'en' %}Illustrative restaurant table{% else %}Иллюстративное фото ресторанного стола{% endif %}" loading="lazy">
+                <span>{% if site_language == 'en' %}Illustrative restaurant atmosphere{% else %}Иллюстрация атмосферы ресторана{% endif %}</span>
+            </button>
+            <button class="gallery-image-button" type="button" data-gallery-image="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=1200&amp;q=85" data-gallery-alt="{% if site_language == 'en' %}Illustrative dishes on a table{% else %}Иллюстративное фото блюд на столе{% endif %}">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="{% if site_language == 'en' %}Illustrative dishes on a table{% else %}Иллюстративное фото блюд на столе{% endif %}" loading="lazy">
+                <span>{% if site_language == 'en' %}Illustrative dishes{% else %}Иллюстрация блюд{% endif %}</span>
+            </button>
+            <button class="gallery-image-button" type="button" data-gallery-image="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=1200&amp;q=85" data-gallery-alt="{% if site_language == 'en' %}Illustrative cafe interior{% else %}Иллюстративное фото интерьера кафе{% endif %}">
+                <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=900&amp;q=80" alt="{% if site_language == 'en' %}Illustrative cafe interior{% else %}Иллюстративное фото интерьера кафе{% endif %}" loading="lazy">
+                <span>{% if site_language == 'en' %}Illustrative interior{% else %}Иллюстрация интерьера{% endif %}</span>
+            </button>
+        {% endfor %}
+    </div>
+    <div class="gallery-bottom"><p>{% if site_language == 'en' %}We would love to welcome you.{% else %}Будем рады видеть вас в Terra.{% endif %}</p><button class="button" type="button" data-open-booking>{% if site_language == 'en' %}Book a table{% else %}Забронировать стол{% endif %}</button></div>
+</section>
+<dialog class="lightbox" data-lightbox aria-label="{% if site_language == 'en' %}Gallery image{% else %}Фотография галереи{% endif %}">
+    <button class="dialog-close lightbox-close" type="button" aria-label="{% if site_language == 'en' %}Close image{% else %}Закрыть фотографию{% endif %}" data-close-lightbox>×</button>
+    <img src="" alt="" data-lightbox-image>
+</dialog>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

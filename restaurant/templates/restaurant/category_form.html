@@ -1,0 +1,43 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Добавить категорию меню ресторана.">
+    <title>{% if site_language == 'en' %}Add menu category{% else %}Добавить категорию меню{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="standalone-form-page">
+    <section class="standalone-form-card">
+        <p class="eyebrow">{{ view.restaurant.name }}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}New category.{% else %}Категория меню.{% endif %}</h1>
+        <p class="form-intro">{% if site_language == 'en' %}Suggestions: breakfast, starters, salads, soups, mains, pilaf, grill, pizza and pasta, desserts, drinks. Add only categories that this restaurant actually serves.{% else %}Идеи: завтраки, закуски, салаты, супы, основные блюда, плов, гриль, пицца и паста, десерты, напитки. Добавляй только те категории, которые действительно есть в этом ресторане.{% endif %}</p>
+        <form method="post" class="form-stack">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}</div>
+            {% endfor %}
+            <datalist id="menu-category-suggestions">
+                <option value="Завтраки">
+                <option value="Закуски">
+                <option value="Салаты">
+                <option value="Супы">
+                <option value="Основные блюда">
+                <option value="Плов">
+                <option value="Гриль">
+                <option value="Пицца и паста">
+                <option value="Десерты">
+                <option value="Напитки">
+            </datalist>
+            <button class="button" type="submit">{% if site_language == 'en' %}Save category{% else %}Сохранить категорию{% endif %}</button>
+        </form>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

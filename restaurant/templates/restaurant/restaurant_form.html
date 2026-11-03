@@ -1,0 +1,56 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Добавить ресторан в каталог.">
+    <title>{% if site_language == 'en' %}Add a restaurant{% else %}Добавить ресторан{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="standalone-form-page">
+    <section class="standalone-form-card">
+        <p class="eyebrow">{% if site_language == 'en' %}Restaurant profile{% else %}Карточка ресторана{% endif %}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}Add a restaurant.{% else %}Новый ресторан.{% endif %}</h1>
+        <p class="form-intro">{% if site_language == 'en' %}Choose your restaurant's location on the map and upload its photo. It will appear after admin approval.{% else %}Отметьте ресторан на карте и загрузите его фотографию. Он появится в каталоге после проверки администратором.{% endif %}</p>
+        <form method="post" enctype="multipart/form-data" class="form-stack">
+            {% csrf_token %}
+            {{ form.latitude }}
+            {{ form.longitude }}
+            <div class="form-field">
+                <label for="restaurant-location-map">{% if site_language == 'en' %}Restaurant location{% else %}Место ресторана на карте{% endif %}</label>
+                <p class="form-note">{% if site_language == 'en' %}Click the map to place the marker. You can move it by dragging.{% else %}Нажмите на карту, чтобы поставить метку. Её можно перетащить.{% endif %}</p>
+                <div class="location-picker-map" id="restaurant-location-map" data-location-picker aria-label="{% if site_language == 'en' %}Choose restaurant location on the map{% else %}Выберите место ресторана на карте{% endif %}"></div>
+                <p class="map-status" data-location-status role="status" aria-live="polite">{% if site_language == 'en' %}Select the location on the map.{% else %}Выберите место на карте.{% endif %}</p>
+                {% for field in form %}
+                    {% if field.name == 'latitude' or field.name == 'longitude' %}
+                        {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% for field in form %}
+                {% if field.name != 'latitude' and field.name != 'longitude' %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.name == 'image' %}<img class="upload-preview" data-upload-preview alt="{% if site_language == 'en' %}Restaurant photo preview{% else %}Предпросмотр фото ресторана{% endif %}" hidden>{% endif %}
+                    {% if field.help_text %}<span class="form-note">{{ field.help_text }}</span>{% endif %}
+                    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+                {% endif %}
+            {% endfor %}
+            {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            <button class="button" type="submit">{% if site_language == 'en' %}Save restaurant{% else %}Сохранить ресторан{% endif %}</button>
+        </form>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{% static 'restaurant/js/map.js' %}?v=3" defer></script>
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

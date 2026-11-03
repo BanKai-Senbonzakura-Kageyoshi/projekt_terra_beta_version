@@ -1,0 +1,74 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="{{ restaurant.description|truncatechars:150 }}">
+    <meta name="theme-color" content="#13361c">
+    <title>{{ restaurant.name }} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main>
+    <section class="restaurant-detail-hero">
+        {% if restaurant.image %}<img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">{% elif restaurant.image_url %}<img src="{{ restaurant.image_url }}" alt="{{ restaurant.name }}">{% else %}<img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&amp;fit=crop&amp;w=1800&amp;q=85" alt="{% if site_language == 'en' %}Illustrative restaurant photo{% else %}Иллюстративное фото ресторана{% endif %}">{% endif %}
+        <div class="restaurant-detail-hero-copy">
+            <p class="eyebrow">{% if restaurant.cuisine %}{{ restaurant.cuisine }}{% else %}{% if site_language == 'en' %}Cuisine not listed{% else %}Кухня не указана{% endif %}{% endif %} · Душанбе</p>
+            <h1 class="display-heading">{{ restaurant.name }}</h1>
+            <p>{{ restaurant.description }}</p>
+            {% if restaurant.owner and restaurant.owner.is_superuser %}<button class="button" type="button" data-open-booking data-book-restaurant="{{ restaurant.id }}">{% if site_language == 'en' %}Request a table{% else %}Оставить заявку на столик{% endif %}</button>{% else %}<p class="form-note">{% if site_language == 'en' %}Online reservations are not available for this listing yet.{% else %}Онлайн-бронирование для этого заведения пока недоступно.{% endif %}</p>{% endif %}
+        </div>
+    </section>
+    <section class="restaurant-detail-info section-wrap">
+        <div><p class="footer-label">{% if site_language == 'en' %}Address{% else %}Адрес{% endif %}</p><p>{% if restaurant.address == 'Душанбе, Таджикистан' %}{% if site_language == 'en' %}Dushanbe · street address not listed{% else %}Душанбе · улица не указана в источнике{% endif %}{% else %}{{ restaurant.address }}{% endif %}</p><a class="text-link" href="{% url 'restaurant:restaurants' %}?place={{ restaurant.id }}#restaurant-map">{% if site_language == 'en' %}Show on map{% else %}Показать точку на карте{% endif %} ↗</a></div>
+        {% if restaurant.opening_hours %}<div><p class="footer-label">{% if site_language == 'en' %}Hours{% else %}Часы работы{% endif %}</p><p>{{ restaurant.opening_hours }}</p></div>{% endif %}
+        {% if restaurant.phone %}<div><p class="footer-label">{% if site_language == 'en' %}Phone{% else %}Телефон{% endif %}</p><a href="tel:{{ restaurant.phone }}">{{ restaurant.phone }}</a></div>{% endif %}
+    </section>
+    <section class="restaurant-menu section-wrap">
+        <div class="section-heading"><p class="eyebrow">{% if site_language == 'en' %}From the kitchen{% else %}Из меню{% endif %}</p><h2 class="display-heading">{% if site_language == 'en' %}The menu{% else %}Меню ресторана{% endif %}</h2></div>
+        {% if restaurant.menu_is_sample %}
+            <div class="sample-menu-notice" role="note">
+                {% if site_language == 'en' %}
+                    Sample menu and prices for illustration only. This restaurant has not confirmed them.
+                {% else %}
+                    Пример меню и цен для демонстрации. Ресторан не подтверждал эти блюда и цены.
+                {% endif %}
+            </div>
+        {% endif %}
+        <p class="menu-photo-note">{% if site_language == 'en' %}Dish photos are illustrative stock images and may not show the actual serving.{% else %}Фотографии блюд — иллюстративные стоковые снимки; реальная подача может отличаться.{% endif %}</p>
+        <nav class="menu-category-nav restaurant-category-nav" aria-label="{% if site_language == 'en' %}Menu categories{% else %}Категории меню{% endif %}">
+            {% for category in restaurant.categories.all %}
+                {% if category.is_active %}
+                    <a href="#restaurant-category-{{ category.id }}">{% if site_language == 'en' and category.name_en %}{{ category.name_en }}{% else %}{{ category.name }}{% endif %}</a>
+                {% endif %}
+            {% endfor %}
+        </nav>
+        {% for category in restaurant.categories.all %}
+            {% if category.is_active %}
+                <div class="menu-category" id="restaurant-category-{{ category.id }}">
+                    <div class="menu-category-title"><span>0{{ forloop.counter }}</span><h2>{% if site_language == 'en' and category.name_en %}{{ category.name_en }}{% else %}{{ category.name }}{% endif %}</h2></div>
+                    {% for item in category.items.all %}
+                        <article class="menu-item">
+                            {% if item.image %}<img class="menu-item-photo" src="{{ item.image.url }}" alt="{% if site_language == 'en' and item.name_en %}{{ item.name_en }}{% else %}{{ item.name }}{% endif %}" loading="lazy" decoding="async">{% elif item.image_url %}<img class="menu-item-photo" src="{{ item.image_url }}" alt="{% if site_language == 'en' and item.name_en %}{{ item.name_en }}{% else %}{{ item.name }}{% endif %}" loading="lazy" decoding="async">{% else %}<img class="menu-item-photo" src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&amp;fit=crop&amp;w=720&amp;q=80" alt="{% if site_language == 'en' %}Illustrative dish photo{% else %}Иллюстративное фото блюда{% endif %}" loading="lazy" decoding="async">{% endif %}
+                            <div class="menu-item-copy">
+                                <h3>{% if site_language == 'en' and item.name_en %}{{ item.name_en }}{% else %}{{ item.name }}{% endif %}</h3>
+                                <p>{% if site_language == 'en' and item.description_en %}{{ item.description_en }}{% else %}{{ item.description }}{% endif %}</p>
+                                {% if not item.is_available %}<div class="menu-tags"><span class="unavailable">{% if site_language == 'en' %}Temporarily unavailable{% else %}Временно недоступно{% endif %}</span></div>{% endif %}
+                            </div>
+                            <span class="menu-price">{{ item.price|floatformat:0 }} {% if site_language == 'en' %}TJS{% else %}смн{% endif %}</span>
+                        </article>
+                    {% empty %}<p class="empty-note">{% if site_language == 'en' %}No dishes in this category yet.{% else %}Пока нет блюд в этой категории.{% endif %}</p>{% endfor %}
+                </div>
+            {% endif %}
+        {% empty %}
+            <p class="empty-note">{% if site_language == 'en' %}The restaurant has not published its menu here yet. Please check with them for current dishes and prices.{% else %}Ресторан пока не опубликовал здесь своё меню. Актуальные блюда и цены уточняйте в ресторане.{% endif %}</p>
+        {% endfor %}
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Создайте аккаунт владельца ресторана.">
+    <title>{% if site_language == 'en' %}Create an account{% else %}Регистрация{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="standalone-form-page">
+    <section class="standalone-form-card">
+        <p class="eyebrow">{% if site_language == 'en' %}For restaurant owners{% else %}Для владельцев ресторанов{% endif %}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}Create your account.{% else %}Создайте аккаунт.{% endif %}</h1>
+        <p class="form-intro">{% if site_language == 'en' %}Create a basic account. Restaurant management is only available to accounts that an administrator has approved for owner access.{% else %}Здесь создаётся обычный аккаунт. Управлять рестораном можно только после того, как администратор выдаст аккаунту права владельца.{% endif %}</p>
+        <form method="post" class="form-stack">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<span class="form-note">{{ field.help_text|safe }}</span>{% endif %}
+                    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            <button class="button" type="submit">{% if site_language == 'en' %}Create account{% else %}Зарегистрироваться{% endif %}</button>
+        </form>
+        <p class="form-note">{% if site_language == 'en' %}Already registered?{% else %}Уже есть аккаунт?{% endif %} <a class="text-link" href="{% url 'restaurant:login' %}">{% if site_language == 'en' %}Log in{% else %}Войти{% endif %}</a></p>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>

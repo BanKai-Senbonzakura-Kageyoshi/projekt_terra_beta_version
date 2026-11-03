@@ -1,0 +1,45 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ site_language }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if site_language == 'en' %}Booking decision{% else %}Решение по брони{% endif %} — Terra</title>
+    {% include 'restaurant/head_assets.html' %}
+</head>
+<body class="bg-terra-ivory font-clean text-terra-green">
+{% include 'restaurant/site_header.html' %}
+<main class="owner-page section-wrap">
+    <a class="text-link owner-back-link" href="{% url 'restaurant:booking_manage' %}">← {% if site_language == 'en' %}All requests{% else %}Все заявки{% endif %}</a>
+    <section class="booking-decision-card">
+        <p class="eyebrow">{{ booking.restaurant.name }}</p>
+        <h1 class="display-heading">{% if site_language == 'en' %}Review request{% else %}Заявка на столик{% endif %}</h1>
+        <div class="booking-facts">
+            <p><strong>{% if site_language == 'en' %}Guest{% else %}Гость{% endif %}</strong>{{ booking.name }}</p>
+            <p><strong>{% if site_language == 'en' %}Phone{% else %}Телефон{% endif %}</strong><a href="tel:{{ booking.phone }}">{{ booking.phone }}</a></p>
+            <p><strong>{% if site_language == 'en' %}Date and time{% else %}Дата и время{% endif %}</strong>{{ booking.booking_date }} · {{ booking.booking_time }}</p>
+            <p><strong>{% if site_language == 'en' %}Guests{% else %}Гостей{% endif %}</strong>{{ booking.guests }}</p>
+            <p><strong>{% if site_language == 'en' %}Current status{% else %}Статус{% endif %}</strong>{{ booking.get_status_display }}</p>
+            {% if booking.comments %}<p class="booking-comment"><strong>{% if site_language == 'en' %}Guest note{% else %}Комментарий гостя{% endif %}</strong>{{ booking.comments }}</p>{% endif %}
+        </div>
+        {% if not table_count %}<p class="form-errors" role="status">{% if site_language == 'en' %}No active tables with enough seats. Add or activate a table first.{% else %}Нет свободных активных столиков подходящей вместимости. Сначала добавьте или включите столик.{% endif %}</p>{% endif %}
+        <form method="post" class="form-stack">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-field">
+                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.name == 'table' %}<span class="form-note">{% if site_language == 'en' %}Only active tables with enough seats and no other confirmed booking on this date are shown. The table stays unavailable until you mark the guests as departed.{% else %}Показаны активные столики нужной вместимости без другой подтверждённой брони на эту дату. Столик будет занят, пока вы не отметите, что гости ушли.{% endif %}</span>{% endif %}
+                    {% for error in field.errors %}<span class="field-error">{{ error }}</span>{% endfor %}
+                </div>
+            {% endfor %}
+            {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+            <button class="button" type="submit">{% if site_language == 'en' %}Save decision{% else %}Сохранить решение{% endif %}</button>
+        </form>
+    </section>
+</main>
+{% include 'restaurant/site_footer.html' %}
+{% include 'restaurant/booking_dialog.html' %}
+{% include 'restaurant/site_scripts.html' %}
+</body>
+</html>
